@@ -14,6 +14,8 @@ const convert = {
 };
 
 export default class App extends React.Component {
+  state = { input: '', output: 'The conversion will appear here', selectedIndex: 0 }
+
   constructor () {
     super()
     this.updateIndex = this.updateIndex.bind(this)
@@ -23,29 +25,48 @@ export default class App extends React.Component {
     this.setState({selectedIndex})
   }
 
-  state = { input: '', output: 'Empty', selectedIndex: 2 }
-
   onButtonPress = () => {
-    result = convert.dec2bin(this.state.input);
-
-    this.setState({ output: result.split(/(.{4})/g).join(' ') })
+    switch(this.state.selectedIndex) {
+      case 0:
+        result = convert.dec2bin(this.state.input);
+        this.setState({ output: result.split(/(.{4})/g).join(' ') })
+        break;
+      case 1:
+        result = convert.dec2hex(this.state.input);
+        this.setState({ output: result.split(/(.{4})/g).join(' ') })
+        break;
+      case 2:
+        result = convert.bin2dec(this.state.input);
+        this.setState({ output: result.split(/(.{4})/g).join(' ') })
+        break;
+      case 3:
+        result = convert.bin2hex(this.state.input);
+        this.setState({ output: result.split(/(.{4})/g).join(' ') })
+        break;
+      default:
+        this.setState({ output: 'The conversion will appear here' });
+        break;
+    }
   }
 
   onClearPress = () => {
-    this.setState({ output: '', input: '' })
+    this.setState({
+      output: 'The conversion will appear here',
+      input: '',
+    })
   }
 
   render() {
-    const buttons = ['Dec2Bin', 'Bin2Dec', 'Dec2Hex', 'Dec2Oct']
+    const buttons = ['Dec -> Bin', 'Dec -> Hex', 'Bin -> Dec']
     const { selectedIndex } = this.state
 
     return (
-      <View style={{ flex: 1 }}>
+      <View style={{ flex: 1, backgroundColor: '#4589B0' }}>
         <Header
           statusBarProps={{ barStyle: 'light-content' }}
           centerComponent={{ text: 'YohaLater', style: { color: '#fff' } }}
           rightComponent={{ icon: 'info', color: '#fff' }}
-          backgroundColor='#03A9F4'
+          backgroundColor='#1D628B'
         />
 
         <View style={{ paddingTop: 64 }}>
@@ -55,8 +76,8 @@ export default class App extends React.Component {
             buttons={buttons}
             containerStyle={{height: 50}} />
 
-          <Card title='Input'>
-            <FormLabel style={{alignSelf: 'center' }}>
+          <Card title={buttons[this.state.selectedIndex]}>
+            <FormLabel style={{ alignSelf: 'center' }}>
               Quantity to Convert
             </FormLabel>
             <FormInput
@@ -75,7 +96,7 @@ export default class App extends React.Component {
           <Button
             raised
             iconRight
-            onPress={this.onButtonPress}
+            onPress={this.onClearPress}
             icon={{name: 'clear'}}
             backgroundColor="#c0392b"
             title='Clear' />
@@ -83,9 +104,9 @@ export default class App extends React.Component {
             style={{ paddingTop: 15 }}
             raised
             iconRight
-            onPress={this.onClearPress}
+            onPress={this.onButtonPress}
             icon={{name: 'cached'}}
-            backgroundColor="#03A9F4"
+            backgroundColor="#1D628B"
             title='Convert' />
         </View>
 
